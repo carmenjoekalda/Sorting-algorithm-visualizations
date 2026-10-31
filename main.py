@@ -50,6 +50,10 @@ title_font = pygame.font.SysFont("Arial", 32)
 bar_spacing = 5
 bar_width = 21
 
+# speed control variables
+clock = pygame.time.Clock()
+step_delay = 200
+
 # main loop
 while run:
     # display black screen and draw the elements on it
@@ -74,13 +78,14 @@ while run:
             (bar_x, bar_y, bar_width, bar_height)
         )
 
+    # speed control for the algorithm visualization
+    clock.tick(60) # 60 fps
+
     # event handling, when the user clicks something
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    # TO-DO: initialize a clock to control the speed of the visualization
-    # TO-DO: wait for a short time before each step of the algorithm
     # TO-DO: call next step of the algorithm and update the displayed array accordingly
     # TO-DO: if the step requires it, then show i and j in a different color / highlight them in some way
     # TO-DO: user can select which algorithm to visualize from a list of available algorithms (keys of the algorithms dictionary)
