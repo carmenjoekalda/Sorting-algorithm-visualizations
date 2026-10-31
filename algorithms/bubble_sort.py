@@ -1,9 +1,19 @@
 def bubble_sort(array):
     steps = []
+    n = len(array)
 
-    # TO-DO: should append the steps array at each step of the algorithm as one of the following:
-    # steps.append(("compare", i, j, array))
-    # steps.append(("swap", i, j, array))
-    # steps.append(("done", array))
-
+    # Iterate through all array elements
+    for i in range(n):
+        # Skip last i elements since they are already sorted
+        for j in range(0, n-i-1):
+            # compare elements that are next to each other
+            # if left is greater than right, swap them, otherwise, continue
+            steps.append(("compare", j, j+1, array.copy()))
+            if array[j] > array[j+1]:
+                array[j], array[j+1] = array[j+1], array[j]
+                steps.append(("swap", j, j+1, array.copy()))
+            else:
+                steps.append(("no_swap", j, j+1, array.copy()))
+    # When sorting has been completed
+    steps.append(("done", array.copy()))
     return steps
