@@ -17,14 +17,20 @@ selected_algorithm = "Bubble Sort"
 
 steps = []
 current_step = 0
+current_action = None
+highlight_i = None
+highlight_j = None
 
 # reset these 5 variables when calling this function (when choosing a new algorithm and at initialization)
 def start_sorting(name):
-    global selected_algorithm, array_duplicate, steps, finished, current_step
+    global selected_algorithm, array_duplicate, steps, finished, current_step, current_action, highlight_i, highlight_j
     
     selected_algorithm = name
     array_duplicate = array_original.copy()
     steps = algorithms[name](array_duplicate)
+    current_action = None
+    highlight_i = None
+    highlight_j = None
     array_duplicate = array_original.copy()
     finished = False
     current_step = 0
@@ -53,6 +59,7 @@ bar_width = 21
 # speed control variables
 clock = pygame.time.Clock()
 step_delay = 200
+last_step_time = 0
 
 # main loop
 while run:
@@ -80,13 +87,33 @@ while run:
 
     # speed control for the algorithm visualization
     clock.tick(60) # 60 fps
+    current_time = pygame.time.get_ticks()
 
     # event handling, when the user clicks something
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    # TO-DO: call next step of the algorithm and update the displayed array accordingly
+    # if enough time has passed since the last step, then start updating the variables for the current step
+    if current_time - last_step_time >= step_delay and not finished:
+        last_step_time = current_time
+
+        if current_step < len(steps):
+            current_action = steps[current_step][0]
+
+            # for "done", dont fetch i and j
+            if current_action != "done":
+                highlight_i = steps[current_step][1]
+                highlight_j = steps[current_step][2]
+
+            array_duplicate = steps[current_step][-1].copy()
+
+            # go to the next step
+            current_step += 1
+
+        else:
+            finished = True
+
     # TO-DO: if the step requires it, then show i and j in a different color / highlight them in some way
     # TO-DO: user can select which algorithm to visualize from a list of available algorithms (keys of the algorithms dictionary)
     pygame.display.update()
