@@ -44,6 +44,7 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
+yellow = (255, 255, 0)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -78,10 +79,26 @@ while run:
         bar_x = 30 + i * (bar_width + bar_spacing)
         bar_y = SCREEN_HEIGHT - bar_height - 50
 
+        # Determine the bar's color
+        color = white
+
+        if i == highlight_i or i == highlight_j:
+            if current_action == "compare":
+                color = yellow
+            elif current_action == "swap":
+                color = red
+            elif current_action == "no_swap":
+                color = green
+            elif current_action == "done":
+                color = green
+
+        if finished:
+            color = green
+
         # draw the bar on the screen
         pygame.draw.rect(
             SCREEN,
-            white,
+            color,
             (bar_x, bar_y, bar_width, bar_height)
         )
 
@@ -114,7 +131,6 @@ while run:
         else:
             finished = True
 
-    # TO-DO: if the step requires it, then show i and j in a different color / highlight them in some way
     # TO-DO: user can select which algorithm to visualize from a list of available algorithms (keys of the algorithms dictionary)
     pygame.display.update()
 
