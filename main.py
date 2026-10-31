@@ -33,19 +33,34 @@ start_sorting(selected_algorithm)
 # pygame window
 pygame.init()
 
+white = (255, 255, 255)
+black = (0, 0, 0)
+red = (255, 0, 0)
+green = (0, 255, 0)
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Sorting Algorithm Visualizer")
+
+title_font = pygame.font.SysFont("Arial", 32)
 
 # main loop
 while run:
+    # display black screen and draw the title (name of the selected algorithm) on it
+    title = title_font.render(f"Algorithm: {selected_algorithm}", True, white)
+    title_div = title.get_rect(center=(SCREEN_WIDTH // 2, 30))
+    
+    SCREEN.fill(black)
+    SCREEN.blit(title, title_div)
+
     # event handling, when the user clicks something
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
     # TO-DO: initialize a clock to control the speed of the visualization
-    # TO-DO: display the current algorithm name on the screen
     # TO-DO: show duplicated array as bars on the screen
     # TO-DO: wait for a short time before each step of the algorithm
     # TO-DO: call next step of the algorithm and update the displayed array accordingly
