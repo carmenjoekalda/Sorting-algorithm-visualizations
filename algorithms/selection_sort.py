@@ -1,9 +1,18 @@
 def selection_sort(array):
     steps = []
 
-    # TO-DO: should append the steps array at each step of the algorithm as one of the following:
-    # steps.append(("compare", i, j, array))
-    # steps.append(("swap", i, j, array))
-    # steps.append(("done", array))
-
+    # Look through all elements starting from the non sorted ones
+    # csi : Current_Smallest_Index
+    for i in range(len(array)):
+        csi = i
+        for j in range(i, len(array) ):
+            # Compare the current smallest element to every next element
+            steps.append(("compare", csi, j, array.copy()))
+            if array[csi] > array[j]:
+                csi = j
+        # After finding the smallest element swap it to the lowest non sorted index
+        array[i], array[csi] = array[csi], array[i]
+        steps.append(("swap", i, csi, array.copy()))
+    # When sorting is completed
+    steps.append(("done", array))
     return steps
