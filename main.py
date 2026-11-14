@@ -13,6 +13,9 @@ algorithms = {
     "Bubble Sort": bubble_sort,
     "Selection Sort": selection_sort
 }
+algorithm_names = []
+for name in algorithms.keys():
+    algorithm_names.append(name)
 selected_algorithm = "Bubble Sort"
 
 steps = []
@@ -21,7 +24,7 @@ current_action = None
 highlight_i = None
 highlight_j = None
 
-# reset these 5 variables when calling this function (when choosing a new algorithm and at initialization)
+# reset the variables when calling this function (when choosing a new algorithm and at initialization)
 def start_sorting(name):
     global selected_algorithm, array_duplicate, steps, finished, current_step, current_action, highlight_i, highlight_j
     
@@ -45,6 +48,8 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 yellow = (255, 255, 0)
+gray = (192, 192, 192)
+blue = (0, 0, 225)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -53,31 +58,57 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Sorting Algorithm Visualizer")
 
 title_font = pygame.font.SysFont("Arial", 32)
+button_font = pygame.font.SysFont("Arial", 18)
 
 bar_spacing = 5
 bar_width = 21
 
 # speed control variables
 clock = pygame.time.Clock()
-step_delay = 200
+step_delay = 100
 last_step_time = 0
 
 # main loop
 while run:
     # display black screen and draw the elements on it
     # display the title (name of the selected algorithm)
-    title = title_font.render(f"Algorithm: {selected_algorithm}", True, white)
+    title = title_font.render(f"Algorithm: {selected_algorithm} | {step_delay} ms", True, white)
     title_div = title.get_rect(center=(SCREEN_WIDTH // 2, 30))
     
     SCREEN.fill(black)
     SCREEN.blit(title, title_div)
+
+    # Display the control buttons
+    btn_algorithm = pygame.Rect(190, 520, 160, 40)
+    btn_slower = pygame.Rect(370, 520, 110, 40)
+    btn_faster = pygame.Rect(500, 520, 110, 40)
+
+    color_btn_slower = blue
+    color_btn_faster = blue
+
+    if step_delay == 0:
+        color_btn_faster = gray
+    if step_delay == 300:
+        color_btn_slower = gray
+
+    pygame.draw.rect(SCREEN, blue, btn_algorithm)
+    pygame.draw.rect(SCREEN, color_btn_slower, btn_slower)
+    pygame.draw.rect(SCREEN, color_btn_faster, btn_faster)
+
+    txt_algorithm = button_font.render("Next Algorithm", True, white)
+    txt_slower = button_font.render("Speed -", True, white)
+    txt_faster = button_font.render("Speed +", True, white)
+
+    SCREEN.blit(txt_algorithm, txt_algorithm.get_rect(center=btn_algorithm.center))
+    SCREEN.blit(txt_slower, txt_slower.get_rect(center=btn_slower.center))
+    SCREEN.blit(txt_faster, txt_faster.get_rect(center=btn_faster.center))
 
     # display the array as bars on the screen
     for i in range(len(array_duplicate)):
         # calculate the height and position coordinates
         bar_height = array_duplicate[i] * 15
         bar_x = 30 + i * (bar_width + bar_spacing)
-        bar_y = SCREEN_HEIGHT - bar_height - 50
+        bar_y = SCREEN_HEIGHT - bar_height - 100
 
         # Determine the bar's color
         color = white
@@ -108,9 +139,26 @@ while run:
 
     # event handling, when the user clicks something
     for event in pygame.event.get():
+        # Close button
         if event.type == pygame.QUIT:
             run = False
 
+        # Control buttons in the bottom
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if btn_algorithm.collidepoint(event.pos):
+                current_index = algorithm_names.index(selected_algorithm)
+                if current_index == len(algorithm_names) - 1:
+                    next_index = 0
+                else:
+                    next_index = current_index + 1
+                start_sorting(algorithm_names[next_index])
+
+            elif btn_slower.collidepoint(event.pos):
+                step_delay = min(300, step_delay + 50)
+
+            elif btn_faster.collidepoint(event.pos):
+                step_delay = max(0, step_delay - 50)
+    
     # if enough time has passed since the last step, then start updating the variables for the current step
     if current_time - last_step_time >= step_delay and not finished:
         last_step_time = current_time
@@ -131,7 +179,6 @@ while run:
         else:
             finished = True
 
-    # TO-DO: user can select which algorithm to visualize from a list of available algorithms (keys of the algorithms dictionary)
     pygame.display.update()
 
 pygame.quit()
